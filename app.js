@@ -13,3 +13,6 @@ if(filters){
  });
 }
 document.querySelectorAll('.photo img').forEach(img=>{function fallback(){img.hidden=true;img.parentElement.classList.add('image-failed');}img.addEventListener('error',fallback);if(img.complete&&img.naturalWidth===0)fallback();});
+
+
+document.querySelectorAll('.product-reel').forEach(reel=>{reel.addEventListener('toggle',()=>{const video=reel.querySelector('video');if(!reel.open&&video)video.pause();});});
