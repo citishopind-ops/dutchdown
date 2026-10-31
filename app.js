@@ -52,7 +52,10 @@
     page = Math.max(1, Math.min(page, pages));
     const start = (page - 1) * pageSize;
     const visible = new Set(matches.slice(start, start + pageSize).map(item => item.card));
-    cards.forEach(card => { card.hidden = !visible.has(card); });
+    cards.forEach(card => {
+      card.hidden = !visible.has(card);
+      if (card.hidden) card.querySelector("video")?.pause();
+    });
     filters.querySelectorAll("button[data-category]").forEach(button => {
       const active = button.dataset.category === category;
       button.classList.toggle("active", active);
@@ -125,8 +128,25 @@
     if (img.complete && img.naturalWidth === 0) fallback();
   });
   document.querySelectorAll(".product-reel").forEach(reel => {
+    const video = reel.querySelector("video");
+    function loadReel() {
+      if (!video || !reel.open) return;
+      const sources = video.querySelectorAll("source[data-src]");
+      sources.forEach(source => {
+        source.src = source.dataset.src;
+        delete source.dataset.src;
+      });
+      if (sources.length) video.load();
+    }
     reel.addEventListener("toggle", () => {
-      if (!reel.open) reel.querySelector("video")?.pause();
+      if (reel.open) loadReel();
+      else video?.pause();
     });
+    video?.addEventListener("play", () => {
+      document.querySelectorAll(".product-reel video").forEach(other => {
+        if (other !== video) other.pause();
+      });
+    });
+    loadReel();
   });
 })();
