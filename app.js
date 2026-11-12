@@ -117,14 +117,30 @@
   document.querySelector("#collection-count").textContent = cards.length + " thoughtful finds";
   document.querySelector(".catalog-tools").hidden = false;
   filters.hidden = false;
+  const linkedCardIndex = cards.findIndex(card => card.id && "#" + card.id === location.hash);
+  if (linkedCardIndex !== -1) page = Math.floor(linkedCardIndex / pageSize) + 1;
   render();
+  if (linkedCardIndex >= pageSize) cards[linkedCardIndex].scrollIntoView({ block: "start" });
 
+  document.querySelectorAll(".product-photos").forEach(gallery => {
+    const cover = gallery.closest(".card").querySelector(".photo img");
+    gallery.hidden = false;
+    gallery.addEventListener("click", event => {
+      const button = event.target.closest("button[data-photo]");
+      if (!button || button.getAttribute("aria-pressed") === "true") return;
+      gallery.querySelector('[aria-pressed="true"]').setAttribute("aria-pressed", "false");
+      button.setAttribute("aria-pressed", "true");
+      cover.hidden = false;
+      cover.parentElement.classList.remove("image-failed");
+      cover.src = button.dataset.photo;
+    });
+  });
   document.querySelectorAll(".photo img").forEach(img => {
     const fallback = () => {
       img.hidden = true;
       img.parentElement.classList.add("image-failed");
     };
-    img.addEventListener("error", fallback, { once: true });
+    img.addEventListener("error", fallback);
     if (img.complete && img.naturalWidth === 0) fallback();
   });
   document.querySelectorAll(".product-reel").forEach(reel => {
