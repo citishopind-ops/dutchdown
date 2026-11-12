@@ -145,8 +145,9 @@
   });
   document.querySelectorAll(".product-reel").forEach(reel => {
     const video = reel.querySelector("video");
+    const details = reel.closest(".product-details");
     function loadReel() {
-      if (!video || !reel.open) return;
+      if (!video || !reel.open || !details.open) return;
       const sources = video.querySelectorAll("source[data-src]");
       sources.forEach(source => {
         source.src = source.dataset.src;
@@ -157,6 +158,11 @@
     reel.addEventListener("toggle", () => {
       if (reel.open) loadReel();
       else video?.pause();
+    });
+    details.addEventListener("toggle", () => {
+      if (details.open) return;
+      video?.pause();
+      reel.open = false;
     });
     video?.addEventListener("play", () => {
       document.querySelectorAll(".product-reel video").forEach(other => {

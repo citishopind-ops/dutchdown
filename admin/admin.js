@@ -133,12 +133,17 @@ function productCard(product, photos, reel) {
 
   return [
     '<article class="card added-product" id="' + product.id + '" data-product-id="' + product.id + '" data-category="' + category + '">',
-    '<div class="photo"><img src="' + cover.path + '" width="' + cover.width + '" height="' + cover.height +
-      '" alt="' + name + '" loading="lazy" decoding="async">' + badge + "</div>",
+    '<details class="product-details">',
+    '<summary class="photo" aria-label="View details for ' + name + '"><img src="' + cover.path +
+      '" width="' + cover.width + '" height="' + cover.height +
+      '" alt="' + name + '" loading="lazy" decoding="async"></summary>',
+    '<div class="product-info">',
     gallery,
-    reelMarkup,
     '<p class="category">' + escapeHTML(product.category.toUpperCase()) + '</p><h3>' + name + '</h3>',
     '<p class="description">' + escapeHTML(product.description) + '</p>',
+    badge,
+    reelMarkup,
+    '</div></details>',
     '<div class="card-bottom"><strong>' + price + '</strong><a class="direct-order" href="' + orderUrl +
       '" aria-label="Order ' + name + ' on WhatsApp">Order on WhatsApp ↗</a></div>',
     "</article>"

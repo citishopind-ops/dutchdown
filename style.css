@@ -24,3 +24,11 @@
 }
 .product-photos button[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
 .product-photos img { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+.product-details > summary { display: block; cursor: pointer; list-style: none; }
+.product-details > summary::-webkit-details-marker { display: none; }
+.product-details > summary.image-failed { display: grid; }
+.product-details > summary:hover { border-color: #bec8be; }
+.product-details + .card-bottom { margin-top: 8px; }
+.product-info h3, .product-info .description { min-height: 0; }
+.product-info .badge { position: static; display: inline-block; background: #e9eee6; }
