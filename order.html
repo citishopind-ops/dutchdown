@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Delivery Details | Dutchdown</title>
+  <link rel="stylesheet" href="style.css?v=20261112-product-details">
+  <style>
+    .checkout { width: min(100% - 32px, 520px); margin: 32px auto; padding: clamp(18px, 5vw, 32px); background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+    .checkout h1 { margin: 16px 0; font-size: clamp(32px, 8vw, 44px); letter-spacing: -1px; }
+    .checkout label { display: block; font-weight: bold; margin-top: 16px; }
+    .checkout input, .checkout textarea { width: 100%; padding: 10px 12px; border: 1px solid #788177; border-radius: 6px; color: inherit; background: #fff; }
+    .checkout textarea { resize: vertical; }
+    .checkout .primary { width: 100%; margin-bottom: 0; }
+    .checkout .back { text-decoration: underline; }
+    #order-summary { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <header><a class="brand" href="./">dutchdown</a></header>
+  <main class="checkout">
+    <a class="back" href="./#collection">Back to products</a>
+    <h1>Delivery details</h1>
+    <p id="order-summary" hidden></p>
+    <noscript><p>Enable JavaScript to continue your WhatsApp order.</p></noscript>
+    <form id="order-form" hidden>
+      <label for="customer-name">Your Name</label>
+      <input id="customer-name" autocomplete="name" maxlength="100" required>
+      <label for="delivery-address">Address</label>
+      <textarea id="delivery-address" autocomplete="street-address" rows="4" maxlength="500" placeholder="House or flat number, street, area and city" required></textarea>
+      <label for="delivery-pin">PIN Code (required)</label>
+      <input id="delivery-pin" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[1-9][0-9]{5}" maxlength="6" aria-describedby="pin-help" required>
+      <small id="pin-help">Enter your 6-digit delivery PIN code.</small>
+      <button class="primary" type="submit">Continue to WhatsApp</button>
+    </form>
+  </main>
+  <script>
+    const form = document.querySelector("#order-form");
+    const order = new URLSearchParams(location.search).get("text");
+    const summary = document.querySelector("#order-summary");
+
+    if (order) {
+      summary.textContent = order.split("\n")[1] || "WhatsApp order";
+      summary.hidden = false;
+      form.hidden = false;
+    } else {
+      summary.textContent = "Choose a product to start your order.";
+      summary.hidden = false;
+    }
+
+    const nameField = document.querySelector("#customer-name");
+    const addressField = document.querySelector("#delivery-address");
+    const pinField = document.querySelector("#delivery-pin");
+
+    for (const field of [nameField, addressField]) {
+      field.addEventListener("input", () => field.setCustomValidity(""));
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const name = nameField.value.trim();
+      const address = addressField.value.trim();
+      nameField.setCustomValidity(name ? "" : "Enter your name.");
+      addressField.setCustomValidity(address ? "" : "Enter your delivery address.");
+      if (!order || !form.reportValidity()) return;
+
+      const whatsapp = new URL("https://wa.me/919016304096");
+      whatsapp.searchParams.set("text", [
+        order, "", "Name: " + name, "Address: " + address, "PIN Code: " + pinField.value
+      ].join("\n"));
+      location.assign(whatsapp.href);
+    });
+  </script>
+</body>
+</html>
